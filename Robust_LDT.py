@@ -50,8 +50,8 @@ if __name__ == '__main__':
     print(f'Huber a: {huber_results(t, A).x[0]:.3}, b: {huber_results(t, A).x[1]:.3} c: {huber_results(t, A).x[2]:.3}')
 
     plt.plot(t, A)
-    plt.plot(t, y_lsq, label='linear loss')
-    plt.plot(t, y_soft_l1, label='soft_l1 loss')
+    plt.plot(t, y_lsq, '--', label='linear loss')
+    plt.plot(t, y_soft_l1, '-.', label='soft_l1 loss')
     plt.plot(t, y_huber, label='huber loss')
     plt.xlabel("t")
     plt.ylabel("y")

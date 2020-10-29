@@ -4,16 +4,15 @@ import matplotlib.pyplot as plt
 
 
 def load_data(filePath):
-    with open(filePath) as f:
-        data = np.loadtxt(f, dtype=np.float64)
-        t = data[:, 0]
-        A = data[:, 1]
-        A2 = A - statistics.mean(A)
-        loc_max_A2_begin_ind = np.argmax(A2[:int(0.1 * len(t))])
-        loc_max_A2_end_ind = np.argmax(A2[int(0.9 * len(t)):]) + len(A2[:int(0.9 * len(t))])
-        t2 = t[loc_max_A2_begin_ind:loc_max_A2_end_ind:1]
-        time = t2 - t2[0]
-        Amplitude = A2[loc_max_A2_begin_ind:loc_max_A2_end_ind:1]
+    data = np.loadtxt(filePath, dtype=np.float64)
+    t = data[:, 0]
+    A = data[:, 1]
+    A2 = A - statistics.mean(A)
+    loc_max_A2_begin_ind = np.argmax(A2[:int(0.1 * len(t))])
+    loc_max_A2_end_ind = np.argmax(A2[int(0.9 * len(t)):]) + len(A2[:int(0.9 * len(t))])
+    t2 = t[loc_max_A2_begin_ind:loc_max_A2_end_ind:1]
+    time = t2 - t2[0]
+    Amplitude = A2[loc_max_A2_begin_ind:loc_max_A2_end_ind:1]
     return time, Amplitude
 
 
