@@ -38,8 +38,20 @@ class Signal:
         return [mean_of_time_diffs, median_of_time_diffs, std_of_time_diffs]
 
     def compute_period(self):
-        """Computes period of structural response based on dft"""
-        pass  # do zrobienia
+        """Computes period features of structural response """
+        A_sings = np.sign(self.Amplitude[:])
+        A_diffs = np.diff(A_sings[:])
+        sign_changes_of_A = np.where(A_diffs != 0)[0]
+        time_marks_of_roots = self.time[sign_changes_of_A]  # stemple czasowe, w których następuje zmiana znaku wychylenia konstrukcji
+        half_periods = np.diff(time_marks_of_roots)
+        periods_l =[]
+        for i in range(half_periods.size-1):
+            periods_l.append(half_periods[i]+half_periods[i+1])
+        periods = np.array(periods_l)
+        mean_period = np.mean(periods[1:-1]) # odrzucam skrajne
+        median_period = np.median(periods[1:-1])
+        std_of_periods = np.std(periods[1:-1])  # standard deviation 
+        return [mean_period, median_period, std_of_periods]
 
     def lsq_resutls(self):
         res_lsq = least_squares(self.fun, self.x, args=(self.time, self.amplitude_envelope)) # usunięcie genrowania zmiennej lokalnej obwiedni
