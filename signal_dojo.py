@@ -11,6 +11,7 @@ def main():
     print(f'mean, median, and standard deviation of input sampling rate: \n{myobject.compute_sampling_spacing()}\n')
     #check key parameters of period features of the structural reposnse
     print(f'mean, median, and standard deviation of signal main period: \n{myobject.compute_period()}\n')
+
     #return LSF object cost function
     print(f'{myobject.lsq_resutls().cost}')
     # return Soft_L1 fit object
@@ -22,4 +23,6 @@ def main():
 if __name__ == '__main__':
     main()
 
+
+    
 

@@ -53,6 +53,7 @@ class Signal:
         std_of_periods = np.std(periods[1:-1])  # standard deviation 
         return [mean_period, median_period, std_of_periods]
 
+
     def lsq_resutls(self):
         res_lsq = least_squares(self.fun, self.x, args=(self.time, self.amplitude_envelope)) # usunięcie genrowania zmiennej lokalnej obwiedni
         return res_lsq
