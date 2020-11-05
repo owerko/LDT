@@ -44,10 +44,7 @@ class Signal:
         sign_changes_of_A = np.where(A_diffs != 0)[0]
         time_marks_of_roots = self.time[sign_changes_of_A]  # stemple czasowe, w których następuje zmiana znaku wychylenia konstrukcji
         half_periods = np.diff(time_marks_of_roots)
-        periods_l =[]
-        for i in range(half_periods.size-1):
-            periods_l.append(half_periods[i]+half_periods[i+1])
-        periods = np.array(periods_l)
+        periods = half_periods[:-1] + half_periods[1:]
         mean_period = np.mean(periods[1:-1]) # odrzucam skrajne
         median_period = np.median(periods[1:-1])
         std_of_periods = np.std(periods[1:-1])  # standard deviation 
