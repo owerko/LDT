@@ -50,40 +50,9 @@ class Signal:
         median_period = np.median(periods[1:-1])
         std_of_periods = np.std(periods[1:-1])  # standard deviation 
         return [mean_period, median_period, std_of_periods]
-    
-    def fourier_trans(self):
-        """Frequency domain representation + filter cutoff computation"""
-        fourierTransform = np.fft.fft(self.Amplitude_) / len(self.Amplitude_)  # Normalize amplitude
-        fourierTransform = fourierTransform[range(int(len(self.Amplitude_) / 2))]  # Exclude sampling frequency
-        tpCount = len(self.Amplitude_)
-        values = np.arange(int(tpCount / 2))
-        self.timePeriod = tpCount / self.fs  # częstotliwość próbkowania jako zmienna !!!
-        frequencies = values / self.timePeriod
-        self.frequecies_cutted = frequencies[int(0.001 * len(frequencies)):int(0.05 * len(frequencies))]
-        self.fourierTransform_cutted = fourierTransform[int(0.001 * len(fourierTransform)):int(0.05 * len(fourierTransform))]
-        loc_max_Ampl_begin_ind = np.argmax(self.fourierTransform_cutted)
-        self.main_freq = self.frequecies_cutted[loc_max_Ampl_begin_ind]
-        return self
- 
-    def lowpass_filter(self, cutoff, order=5):
-        """filtering data with lowpass filter"""
-        nyq = 0.5 * self.fs
-        normal_cutoff = cutoff / nyq
-        b, a = butter(order, normal_cutoff, btype='low', analog=False)
-        self.Amplitude = lfilter(b, a, self.Amplitude_)
-        return self
-        
-    def bandpass_filter(self, cutin, cutoff, order=5):
-        """filtering data with bandpass filter"""
-        nyq = 0.5 * self.fs
-        normal_cutin = cutin / nyq
-        normal_cutoff = cutoff / nyq
-        b, a = butter(order, [normal_cutin, normal_cutoff], btype='band', analog=False)
-        self.Amplitude = lfilter(b, a, self.Amplitude_)
-        return self
 
-
-    def compute_envelope(self):        
+    def compute_envelope(self):
+        self._fourier_trans()._lowpass_filter(1.5*self.main_freq)
         amplitude_envelope = np.abs(hilbert(self.Amplitude))
         self.amplitude_envelope_cutted = amplitude_envelope[int(0.02 * len(amplitude_envelope)):int(0.98 * len(amplitude_envelope))] # docinka 
         return self
@@ -99,4 +68,35 @@ class Signal:
     def huber_results(self):
         res_hub = least_squares(self.fun, self.x, loss='huber', f_scale=0.1, args=(self.time_cutted, self.amplitude_envelope_cutted))  # jw
         return res_hub
+    
+    def _fourier_trans(self):
+        """Frequency domain representation + filter cutoff computation"""
+        fourierTransform = np.fft.fft(self.Amplitude_) / len(self.Amplitude_)  # Normalize amplitude
+        fourierTransform = fourierTransform[range(int(len(self.Amplitude_) / 2))]  # Exclude sampling frequency
+        tpCount = len(self.Amplitude_)
+        values = np.arange(int(tpCount / 2))
+        self.timePeriod = tpCount / self.fs  # częstotliwość próbkowania jako zmienna !!!
+        frequencies = values / self.timePeriod
+        self.frequecies_cutted = frequencies[int(0.001 * len(frequencies)):int(0.05 * len(frequencies))]
+        self.fourierTransform_cutted = fourierTransform[int(0.001 * len(fourierTransform)):int(0.05 * len(fourierTransform))]
+        loc_max_Ampl_begin_ind = np.argmax(self.fourierTransform_cutted)
+        self.main_freq = self.frequecies_cutted[loc_max_Ampl_begin_ind]
+        return self
+ 
+    def _lowpass_filter(self, cutoff, order=5):
+        """filtering data with lowpass filter"""
+        nyq = 0.5 * self.fs
+        normal_cutoff = cutoff / nyq
+        b, a = butter(order, normal_cutoff, btype='low', analog=False)
+        self.Amplitude = lfilter(b, a, self.Amplitude_)
+        return self
+        
+    def _bandpass_filter(self, cutin, cutoff, order=5):
+        """filtering data with bandpass filter"""
+        nyq = 0.5 * self.fs
+        normal_cutin = cutin / nyq
+        normal_cutoff = cutoff / nyq
+        b, a = butter(order, [normal_cutin, normal_cutoff], btype='band', analog=False)
+        self.Amplitude = lfilter(b, a, self.Amplitude_)
+        return self
 

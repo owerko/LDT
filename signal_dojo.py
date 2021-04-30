@@ -21,7 +21,7 @@ def main():
     #return LSF object cost function
     #print(f'LSF object cost function: {bridge_radar_dyn.lsq_resutls().cost}\n')
     #return LSF object object's solve vector
-    bridge_radar_dyn.fourier_trans().lowpass_filter(1.5*bridge_radar_dyn.main_freq).compute_envelope()
+    bridge_radar_dyn.compute_envelope()
     # dodanie wyznaczenia częstotliwości głównej na potrzeby progu filtra
     # dodanie filtracji sygnału (dolnoprzepustowy)
     #bridge_radar_dyn.bandpass_filter(0.1*bridge_radar_dyn.main_freq, 1.5*bridge_radar_dyn.main_freq)  # dodanie filtracji sygnału (pasmoprzepustowy)
